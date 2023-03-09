@@ -49,7 +49,7 @@ router.route("/:id").delete(async (req, res) => {
     }
 });
 
-router.route("/:id").post(async (req, res) => {
+router.route("/update/:id").post(async (req, res) => {
     try {
         const exercise = await Exercise.findById(req.params.id);
         exercise.username = req.body.username;

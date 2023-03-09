@@ -1,3 +1,4 @@
+/* eslint-disable no-restricted-globals */
 import axios from "axios";
 import React, { Component } from "react";
 import DatePicker from "react-datepicker"
@@ -37,10 +38,10 @@ export default class EditExercise extends Component {
             console.log(error)
         }
         try {
-            const response = await axios.get("http://localhost:8000/users");
+            const response = await axios.get("http://localhost:8000/users/");
             if (response.data.length > 0) {
                 this.setState({
-                    users: response.data.map((user) => user.username),
+                    users: response.data.map(user => user.username),
                     username: response.data[0].username,
                 });
             }
@@ -53,7 +54,7 @@ export default class EditExercise extends Component {
 
     onChangeUsername(e) {
         this.setState({
-            username: e.target.options[e.target.selectedIndex].text
+            username: e.target.value
         });
     }
 
@@ -75,18 +76,6 @@ export default class EditExercise extends Component {
         });
     }
 
-    async addExercise(exercise) {
-        try {
-            const response = await
-                axios.put("http://localhost:8000/exercises/update/" + this.props.match.params.id, exercise);
-            console.log(response.data);
-
-        } catch (error) {
-            console.error(error);
-        }
-    }
-
-
     onSubmit = async (e) => {
         console.log("onSubmit called");
         e.preventDefault();
@@ -97,11 +86,18 @@ export default class EditExercise extends Component {
             duration: this.state.duration,
             date: this.state.date,
         }
-
         console.log(exercise);
 
-        await this.addExercise(exercise);
 
+        try {
+            const response = await axios.put(`http://localhost:8000/exercises/update/${this.props.match.params.id}`,
+                exercise);
+            console.log(response.data);
+
+        } catch (error) {
+            console.error(error);
+        }
+        // history.pushState("/");
         window.location.replace('/');
     }
 
@@ -109,22 +105,18 @@ export default class EditExercise extends Component {
         return (
             <div className="container">
                 <h3>Edit Exercise Log</h3>
-                <form onSubmit={this.onSubmit} onKeyPress={(event) => {
-                    if (event.key === 'Enter') {
-                        event.preventDefault();
-                    }
-                }}>
+                <form onSubmit={this.onSubmit} >
                     <div className="form-group">
                         <label> Username: </label>
                         <select name="" required className="form-control"
                             value={this.state.username} id="username"
                             onChange={this.onChangeUsername} >
                             {
-                                this.state.users.map((user) => (
-                                    <option key={user} value={user}>
+                                this.state.users.map(function (user) {
+                                    return <option key={user} value={user}>
                                         {user}
                                     </option>
-                                ))
+                                })
                             }
                         </select>
                     </div>
@@ -138,7 +130,7 @@ export default class EditExercise extends Component {
                         />
                     </div>
                     <div className="form-group">
-                        <label htmlFor=""> Duration (in minutes): </label>
+                        <label htmlFor=""> Duration <strong>(in minutes)</strong>: </label>
                         <input type="text"
                             className="form-control"
                             required

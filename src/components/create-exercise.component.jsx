@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 import axios from "axios";
 import React, { Component } from "react";
 import DatePicker from "react-datepicker"
@@ -24,10 +25,10 @@ export default class CreateExercise extends Component {
 
     async componentDidMount() {
         try {
-            const response = await axios.get("http://localhost:8000/users");
+            const response = await axios.get("http://localhost:8000/users/");
             if (response.data.length > 0) {
                 this.setState({
-                    users: response.data.map((user) => user.username),
+                    users: response.data.map(user => user.username),
                     username: response.data[0].username,
                 });
             }
@@ -104,15 +105,15 @@ export default class CreateExercise extends Component {
                             value={this.state.username} id="username"
                             onChange={this.onChangeUsername} >
                             {
-                                this.state.users.map((user) => (
-                                    <option key={user} value={user}>
-                                        {user}
+                                this.state.users.map(function (user) {
+                                    return <option
+                                        key={user}
+                                        value={user}>{user}
                                     </option>
-                                ))
+                                })
                             }
                         </select>
                     </div>
-                    <br />
                     <div className="form-group">
                         <label> Description: </label>
                         <input type="text"
@@ -122,9 +123,9 @@ export default class CreateExercise extends Component {
                             onChange={this.onChangeDescription}
                         />
                     </div>
-                    <br />
                     <div className="form-group">
-                        <label htmlFor=""> Duration (in minutes): </label>
+                        <label htmlFor=""> Duration <strong>(in minutes)</strong>:
+                        </label>
                         <input type="text"
                             className="form-control"
                             required
@@ -132,7 +133,6 @@ export default class CreateExercise extends Component {
                             onChange={this.onChangeDuration}
                         />
                     </div>
-                    <br />
                     <div className="form-group">
                         <label htmlFor=""> Date: </label>
                         <div>
@@ -144,7 +144,8 @@ export default class CreateExercise extends Component {
                     </div>
                     <br />
                     <div className="form-group">
-                        <input type="submit" value="Create Exercise Log" className="btn btn-primary" />
+                        <input type="submit" value="Create Exercise Log"
+                            className="btn btn-primary" />
                     </div>
                 </form>
             </div>
